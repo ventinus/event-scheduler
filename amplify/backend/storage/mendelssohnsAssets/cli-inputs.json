@@ -1,0 +1,16 @@
+{
+  "resourceName": "mendelssohnsAssets",
+  "policyUUID": "5c8bb61e",
+  "bucketName": "mendelssohns-assets",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}

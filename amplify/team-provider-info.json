@@ -1,0 +1,27 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-scheduler-dev-210349-authRole",
+      "UnauthRoleArn": "arn:aws:iam::533358021401:role/amplify-scheduler-dev-210349-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::533358021401:role/amplify-scheduler-dev-210349-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-scheduler-dev-210349-deployment",
+      "UnauthRoleName": "amplify-scheduler-dev-210349-unauthRole",
+      "StackName": "amplify-scheduler-dev-210349",
+      "StackId": "arn:aws:cloudformation:us-west-2:533358021401:stack/amplify-scheduler-dev-210349/5a3a8ad0-e3e7-11ed-bb6e-0ae7d72edf6d",
+      "AmplifyAppId": "d3srwgjggapz7i"
+    },
+    "categories": {
+      "auth": {
+        "schedulerb0a962c9": {},
+        "userPoolGroups": {}
+      },
+      "api": {
+        "scheduler": {}
+      },
+      "storage": {
+        "mendelssohnsAssets": {}
+      }
+    }
+  }
+}

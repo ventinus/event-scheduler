@@ -2,6 +2,33 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Next steps
+
+### P0
+
+- get image upload/render working
+- style calendar event
+  - approved/pending
+  - enforce 1 event/day
+- add contact info to event
+  - email/phone?
+- ~~hydrate edit form with data~~
+- ~~implement update event~~
+- implement review event form
+- ~~implement authorization to review an event~~
+- style Header
+- deploy site (netlify?)
+- enable social logins for anyone
+
+### P1
+
+- add profile info data
+  - name, email, photo, description
+- profile page
+  - create/update/delete
+- enforce only future can be created/updated
+- pre-populate new event form data with profile data
+
 ## Available Scripts
 
 In the project directory, you can run:
