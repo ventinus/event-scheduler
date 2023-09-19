@@ -6,26 +6,37 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ### P0
 
-- get image upload/render working
+- ~~get image ~~upload~~/render working~~
+- ~~show success message on create/update~~
+  - ~~show processing/loading indicator overlay in modal~~
+  - ~~show form modal with success message modal~~
+  - ~~add dismiss X button to modals~~
+  - ~~update events list on update event~~
+- ~~change getEvent to be by date, use date as path parameter~~
+- ~~add a delete event button~~
 - style calendar event
-  - approved/pending
+  - ~~approved (green)/pending (blue)~~
   - enforce 1 event/day
 - add contact info to event
   - email/phone?
 - ~~hydrate edit form with data~~
 - ~~implement update event~~
-- implement review event form
+- ~~implement review event form~~
 - ~~implement authorization to review an event~~
-- style Header
+- ~~style Header~~
 - deploy site (netlify?)
 - enable social logins for anyone
+- show "my past/upcoming events" on profile page
 
 ### P1
 
+- notify managers of new requests
+- notify requesters when request is responded to
 - add profile info data
   - name, email, photo, description
 - profile page
   - create/update/delete
+  - view my events - requested/accepted/rejected
 - enforce only future can be created/updated
 - pre-populate new event form data with profile data
 

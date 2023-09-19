@@ -176,6 +176,12 @@ export type ModelEventConnection = {
   nextToken?: string | null,
 };
 
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
+
 export type ModelSubscriptionProfileFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   name?: ModelSubscriptionStringInput | null,
@@ -407,6 +413,33 @@ export type ListEventsQueryVariables = {
 
 export type ListEventsQuery = {
   listEvents?:  {
+    __typename: "ModelEventConnection",
+    items:  Array< {
+      __typename: "Event",
+      id: string,
+      title: string,
+      date: string,
+      description: string,
+      status: string,
+      image?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      owner?: string | null,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type EventsByDateQueryVariables = {
+  date: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelEventFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type EventsByDateQuery = {
+  eventsByDate?:  {
     __typename: "ModelEventConnection",
     items:  Array< {
       __typename: "Event",

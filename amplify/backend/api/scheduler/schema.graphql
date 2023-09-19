@@ -17,7 +17,7 @@ type Event
   ) {
   id: ID!
   title: String!
-  date: String!
+  date: String! @index
   description: String!
   status: String! # TODO: use enum here - pending, approved, denied, cancelled
   image: String

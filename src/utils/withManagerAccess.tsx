@@ -1,21 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Auth } from "aws-amplify";
-import { Unauthorized } from "../components";
-import { getUserGroups, isManager } from "./userUtils";
+import React from "react";
 import { Box } from "@mui/material";
+import { Unauthorized } from "../components";
+import { useUser } from "./userCtx";
 
 export const withManagerAccess =
   (Component: React.FunctionComponent): React.FunctionComponent =>
   (props: any) => {
-    const [groups, groupsSet] = useState<string[] | undefined>();
+    const isManager = useUser();
 
-    useEffect(() => {
-      Auth.currentAuthenticatedUser().then((user) => {
-        groupsSet(getUserGroups(user));
-      });
-    }, []);
+    if (isManager === undefined) return <Box>checking for access</Box>;
 
-    if (!groups) return <Box>checking for access</Box>;
-
-    return isManager(groups) ? <Component {...props} /> : <Unauthorized />;
+    return isManager ? <Component {...props} /> : <Unauthorized />;
   };

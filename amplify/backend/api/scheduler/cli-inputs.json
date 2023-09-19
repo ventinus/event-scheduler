@@ -10,10 +10,11 @@
     "additionalAuthTypes": [
       {
         "mode": "API_KEY",
-        "expirationTime": 365,
-        "apiKeyExpirationDate": "2024-04-25T04:44:30.127Z",
+        "expirationTime": 364,
+        "apiKeyExpirationDate": "2024-05-22T14:51:26.896Z",
         "keyDescription": "mendelssohsn"
       }
-    ]
+    ],
+    "conflictResolution": {}
   }
 }

@@ -1,9 +1,13 @@
 import { API, graphqlOperation } from "aws-amplify";
 import { GraphQLQuery } from "@aws-amplify/api";
-import { ListEventsQuery } from "../../API";
-import { listEvents } from "../../graphql/queries";
-import { createEvent } from "../../graphql/mutations";
-// import { NewEventParams, Event } from "./types";
+import {
+  DeleteEventInput,
+  EventsByDateQuery,
+  ListEventsQuery,
+  UpdateEventInput,
+} from "../../API";
+import { eventsByDate, listEvents } from "../../graphql/queries";
+import { createEvent, updateEvent, deleteEvent } from "../../graphql/mutations";
 import { CreateEventInput, Event } from "../../API";
 
 export const fetchEvents = async ({
@@ -23,26 +27,58 @@ export const fetchEvents = async ({
   }
 };
 
-export const saveNewEvent = async (input: CreateEventInput) => {
+export const fetchEvent = async (
+  dateStr: string
+): Promise<Event | undefined> => {
   try {
-    // TODO: save image to Storage
+    const data = await API.graphql<GraphQLQuery<EventsByDateQuery>>(
+      graphqlOperation(eventsByDate, { date: dateStr })
+    );
+    const events = (data.data?.eventsByDate?.items as Event[]) || [];
+    return events[0];
+  } catch (err) {
+    console.log(`error fetching event with id ${dateStr}`, err);
+  }
+};
+
+export const createEventRequest = async (input: CreateEventInput) => {
+  try {
     return await API.graphql({
       query: createEvent,
-      variables: { input: { ...input, status: "pending" } },
+      variables: {
+        input: { ...input, status: "pending" },
+      },
     });
   } catch (err) {
     console.log("error creating an event", err);
   }
 };
 
-export const updateEvent = async (eventId?: string, data?: any) => {
-  if (!eventId || !data) {
-    throw new Error(
-      `gotta provide an event id and data to update an event id: ${eventId}, data: ${JSON.stringify(
-        data
-      )}`
-    );
+export const updateEventRequest = async (input: UpdateEventInput) => {
+  // if (!eventId || !data) {
+  //   throw new Error(
+  //     `eventId and data required to update an event id: ${eventId}, data: ${JSON.stringify(
+  //       data
+  //     )}`
+  //   );
+  // }
+  try {
+    return await API.graphql({
+      query: updateEvent,
+      variables: { input },
+    });
+  } catch (err) {
+    console.log("error updating an event", err);
   }
-  console.log("updateEvent", eventId, data);
-  return { eventId, ...data, status: "pending" };
+};
+
+export const destroyEventRequest = async (input: DeleteEventInput) => {
+  try {
+    return await API.graphql({
+      query: deleteEvent,
+      variables: { input },
+    });
+  } catch (err) {
+    console.log("error destroying an event", err);
+  }
 };
