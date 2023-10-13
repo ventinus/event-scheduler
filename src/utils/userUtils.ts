@@ -27,7 +27,7 @@ export const getUserGroups = (user?: CognitoUser): string[] => {
 
   const attributes: CognitoAttributes = JSON.parse(atob(idToken.split(".")[1]));
 
-  return attributes[groupsKey];
+  return attributes[groupsKey] || [];
 };
 
 export const isManager = (groups: string[]) => groups.includes("Managers");

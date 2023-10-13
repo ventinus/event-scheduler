@@ -1,11 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { Amplify } from "aws-amplify";
 
 import reportWebVitals from "./reportWebVitals";
 import awsConfig from "./aws-exports";
-import { routes } from "./utils/routes";
+import { AppRouter } from "./utils/routes";
 import "./index.css";
 import { AlertProvider } from "./utils/alertCtx";
 import { UserProvider } from "./utils/userCtx";
@@ -47,13 +46,11 @@ const updatedAwsConfig = {
 
 Amplify.configure(updatedAwsConfig);
 
-const router = createBrowserRouter(routes);
-
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <UserProvider>
       <AlertProvider>
-        <RouterProvider router={router} />
+        <AppRouter />
       </AlertProvider>
     </UserProvider>
   </React.StrictMode>

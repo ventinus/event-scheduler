@@ -10,6 +10,21 @@ export const onCreateProfile = /* GraphQL */ `
     onCreateProfile(filter: $filter, owner: $owner) {
       id
       name
+      events {
+        items {
+          id
+          title
+          date
+          description
+          status
+          image
+          createdAt
+          updatedAt
+          profileEventsId
+          owner
+        }
+        nextToken
+      }
       description
       image
       createdAt
@@ -26,6 +41,21 @@ export const onUpdateProfile = /* GraphQL */ `
     onUpdateProfile(filter: $filter, owner: $owner) {
       id
       name
+      events {
+        items {
+          id
+          title
+          date
+          description
+          status
+          image
+          createdAt
+          updatedAt
+          profileEventsId
+          owner
+        }
+        nextToken
+      }
       description
       image
       createdAt
@@ -42,6 +72,21 @@ export const onDeleteProfile = /* GraphQL */ `
     onDeleteProfile(filter: $filter, owner: $owner) {
       id
       name
+      events {
+        items {
+          id
+          title
+          date
+          description
+          status
+          image
+          createdAt
+          updatedAt
+          profileEventsId
+          owner
+        }
+        nextToken
+      }
       description
       image
       createdAt
@@ -61,9 +106,22 @@ export const onCreateEvent = /* GraphQL */ `
       date
       description
       status
+      profile {
+        id
+        name
+        events {
+          nextToken
+        }
+        description
+        image
+        createdAt
+        updatedAt
+        owner
+      }
       image
       createdAt
       updatedAt
+      profileEventsId
       owner
     }
   }
@@ -79,9 +137,22 @@ export const onUpdateEvent = /* GraphQL */ `
       date
       description
       status
+      profile {
+        id
+        name
+        events {
+          nextToken
+        }
+        description
+        image
+        createdAt
+        updatedAt
+        owner
+      }
       image
       createdAt
       updatedAt
+      profileEventsId
       owner
     }
   }
@@ -97,9 +168,22 @@ export const onDeleteEvent = /* GraphQL */ `
       date
       description
       status
+      profile {
+        id
+        name
+        events {
+          nextToken
+        }
+        description
+        image
+        createdAt
+        updatedAt
+        owner
+      }
       image
       createdAt
       updatedAt
+      profileEventsId
       owner
     }
   }

@@ -11,7 +11,7 @@ import {
   useLocation,
   Outlet,
 } from "react-router-dom";
-import type { Event } from "../API";
+import { EventStatus, type Event } from "../API";
 import { paths } from "../utils/routes";
 import { useUser } from "../utils/userCtx";
 
@@ -27,7 +27,7 @@ function EventsPage() {
       events.map((ev) => ({
         ...ev,
         color:
-          ev.status === "approved"
+          ev.status === EventStatus.APPROVED
             ? theme.palette.success.main
             : theme.palette.info.main,
       })),

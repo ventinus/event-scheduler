@@ -2,8 +2,16 @@
 # all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
 #input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
+enum EventStatus {
+  PENDING
+  APPROVED
+  DENIED
+  CANCELLED
+}
+
 type Event
   @model
+  @searchable
   @auth(
     rules: [
       {
@@ -19,13 +27,19 @@ type Event
   title: String!
   date: String! @index
   description: String!
-  status: String! # TODO: use enum here - pending, approved, denied, cancelled
+  status: EventStatus!
+  profile: Profile! @belongsTo
   image: String
 }
 
 type Profile @model @auth(rules: [{ allow: owner }]) {
   id: ID!
   name: String!
+  events: [Event] @hasMany
   description: String
   image: String
 }
+
+#query SearchEvents {
+#  searchUpcomingEvents
+#}

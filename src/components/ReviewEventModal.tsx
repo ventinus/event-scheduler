@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment } from "react";
 import { withManagerAccess } from "../utils/withManagerAccess";
 
 import {
@@ -13,7 +13,7 @@ import { LoadingButton } from "@mui/lab";
 
 import { paths } from "../utils/routes";
 import { Event } from "../API";
-import { getStorageObject } from "../utils/fileUtils";
+import EventImg from "./EventImg";
 
 const styles = {
   position: "absolute" as "absolute",
@@ -29,9 +29,9 @@ const styles = {
   img: {
     maxWidth: "100%",
     maxHeight: "300px",
-    display: 'block',
-    mx: 'auto',
-    mb: 2
+    display: "block",
+    mx: "auto",
+    mb: 2,
   },
 };
 
@@ -72,16 +72,8 @@ function ReviewEventModal() {
   const navigate = useNavigate();
   const location = useLocation();
   const target = location.state?.previousLocation || paths.events();
-  const [imgSrc, imgSrcSet] = useState<string>("");
 
   const onClose = () => navigate(target);
-
-  useEffect(() => {
-    getStorageObject({
-      dateStr: event.date,
-      fileName: event.image as string,
-    }).then(imgSrcSet);
-  }, [event]);
 
   return (
     <Modal
@@ -105,7 +97,7 @@ function ReviewEventModal() {
             </Fragment>
           ))}
         </dl>
-        <img src={imgSrc} />
+        <EventImg image={event.image} date={event.date} />
         <Box
           sx={{
             textAlign: "right",

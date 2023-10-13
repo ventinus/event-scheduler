@@ -7,6 +7,21 @@ export const getProfile = /* GraphQL */ `
     getProfile(id: $id) {
       id
       name
+      events {
+        items {
+          id
+          title
+          date
+          description
+          status
+          image
+          createdAt
+          updatedAt
+          profileEventsId
+          owner
+        }
+        nextToken
+      }
       description
       image
       createdAt
@@ -25,6 +40,9 @@ export const listProfiles = /* GraphQL */ `
       items {
         id
         name
+        events {
+          nextToken
+        }
         description
         image
         createdAt
@@ -43,9 +61,22 @@ export const getEvent = /* GraphQL */ `
       date
       description
       status
+      profile {
+        id
+        name
+        events {
+          nextToken
+        }
+        description
+        image
+        createdAt
+        updatedAt
+        owner
+      }
       image
       createdAt
       updatedAt
+      profileEventsId
       owner
     }
   }
@@ -63,9 +94,19 @@ export const listEvents = /* GraphQL */ `
         date
         description
         status
+        profile {
+          id
+          name
+          description
+          image
+          createdAt
+          updatedAt
+          owner
+        }
         image
         createdAt
         updatedAt
+        profileEventsId
         owner
       }
       nextToken
@@ -93,9 +134,19 @@ export const eventsByDate = /* GraphQL */ `
         date
         description
         status
+        profile {
+          id
+          name
+          description
+          image
+          createdAt
+          updatedAt
+          owner
+        }
         image
         createdAt
         updatedAt
+        profileEventsId
         owner
       }
       nextToken

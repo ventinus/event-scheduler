@@ -1,4 +1,11 @@
-import { RouteObject } from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  RouteObject,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from "react-router-dom";
 import {
   Root,
   ErrorPage,
@@ -8,12 +15,21 @@ import {
 } from "../containers";
 import { eventAlertVariants } from "../containers/AlertRoute";
 import { EventModal, ReviewEventModal } from "../components";
-import { eventLoader, eventsLoader } from "./loaders";
-import { createEvent, updateEvent, reviewEvent, destroyEvent } from "./actions";
+import { eventLoader, eventsLoader, profileLoader } from "./loaders";
+import {
+  createEvent,
+  updateEvent,
+  reviewEvent,
+  destroyEvent,
+  updateProfile,
+} from "./actions";
+import { useUser } from "./userCtx";
 
 export const paths = {
   home: () => "/",
   profile: () => "/profile",
+  updateProfile: () => "/profile/update",
+  profileUpdated: () => "/profile/updated",
   events: () => "/events",
   eventRequested: () => "/events/requested",
   eventUpdated: () => "/events/updated",
@@ -26,55 +42,61 @@ export const paths = {
   reviewEvent: (dateStr = ":dateStr") => `/events/${dateStr}/review`,
 };
 
-export const routes: RouteObject[] = [
-  {
-    path: "/",
-    element: <Root />,
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        path: "events",
-        loader: eventsLoader,
-        element: <EventsPage />,
-        children: [
-          {
-            path: "new",
-            action: createEvent,
-            // loader: fromStorageLoader("new-event.{{date}}"),
-            // element: <EventModal />,
-          },
-          ...eventAlertVariants.map((variant) => ({
-            path: variant,
-            element: (
-              <AlertRoute target={paths.events() as string} variant={variant} />
-            ),
-          })),
-          {
-            path: ":dateStr/detail",
-            loader: eventLoader,
-            action: createEvent,
-            element: <EventModal />,
-          },
-          {
-            path: ":dateStr/review",
-            loader: eventLoader,
-            action: reviewEvent,
-            element: <ReviewEventModal />,
-          },
-          {
-            path: ":eventId/update",
-            action: updateEvent,
-          },
-          {
-            path: ":eventId/destroy",
-            action: destroyEvent,
-          },
-        ],
-      },
-      {
-        path: 'profile',
-        element: <ProfilePage />
-      }
-    ],
-  },
-];
+export const routes: RouteObject[] = [];
+
+export const AppRouter = () => {
+  const { id, email } = useUser();
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route
+        path="/"
+        loader={profileLoader(id)}
+        element={<Root id={id} email={email} />}
+        errorElement={<ErrorPage />}
+      >
+        <Route index element={<Navigate to={paths.events()} replace />} />
+        <Route path="events" loader={eventsLoader} element={<EventsPage />}>
+          <Route path="new" action={createEvent(id)} />
+          {eventAlertVariants.map((variant) => (
+            <Route
+              path={variant}
+              key={variant}
+              element={
+                <AlertRoute
+                  target={paths.events() as string}
+                  variant={variant}
+                />
+              }
+            />
+          ))}
+          <Route
+            path=":dateStr/detail"
+            loader={eventLoader}
+            action={createEvent(id)}
+            element={<EventModal />}
+          />
+          <Route
+            path=":dateStr/review"
+            loader={eventLoader}
+            action={reviewEvent}
+            element={<ReviewEventModal />}
+          />
+          <Route path=":eventId/update" action={updateEvent} />
+          <Route path=":eventId/destroy" action={destroyEvent} />
+        </Route>
+        <Route
+          path="profile"
+          loader={profileLoader(id)}
+          element={<ProfilePage />}
+          action={updateProfile(id)}
+        >
+          <Route
+            path="updated"
+            element={<AlertRoute target={paths.profile()} variant="updated" />}
+          />
+        </Route>
+      </Route>
+    )
+  );
+  return <RouterProvider router={router} />;
+};

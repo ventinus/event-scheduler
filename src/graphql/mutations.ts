@@ -13,9 +13,22 @@ export const createEvent = /* GraphQL */ `
       date
       description
       status
+      profile {
+        id
+        name
+        events {
+          nextToken
+        }
+        description
+        image
+        createdAt
+        updatedAt
+        owner
+      }
       image
       createdAt
       updatedAt
+      profileEventsId
       owner
     }
   }
@@ -31,9 +44,22 @@ export const updateEvent = /* GraphQL */ `
       date
       description
       status
+      profile {
+        id
+        name
+        events {
+          nextToken
+        }
+        description
+        image
+        createdAt
+        updatedAt
+        owner
+      }
       image
       createdAt
       updatedAt
+      profileEventsId
       owner
     }
   }
@@ -49,9 +75,22 @@ export const deleteEvent = /* GraphQL */ `
       date
       description
       status
+      profile {
+        id
+        name
+        events {
+          nextToken
+        }
+        description
+        image
+        createdAt
+        updatedAt
+        owner
+      }
       image
       createdAt
       updatedAt
+      profileEventsId
       owner
     }
   }
@@ -64,6 +103,21 @@ export const createProfile = /* GraphQL */ `
     createProfile(input: $input, condition: $condition) {
       id
       name
+      events {
+        items {
+          id
+          title
+          date
+          description
+          status
+          image
+          createdAt
+          updatedAt
+          profileEventsId
+          owner
+        }
+        nextToken
+      }
       description
       image
       createdAt
@@ -80,6 +134,21 @@ export const updateProfile = /* GraphQL */ `
     updateProfile(input: $input, condition: $condition) {
       id
       name
+      events {
+        items {
+          id
+          title
+          date
+          description
+          status
+          image
+          createdAt
+          updatedAt
+          profileEventsId
+          owner
+        }
+        nextToken
+      }
       description
       image
       createdAt
@@ -96,6 +165,21 @@ export const deleteProfile = /* GraphQL */ `
     deleteProfile(input: $input, condition: $condition) {
       id
       name
+      events {
+        items {
+          id
+          title
+          date
+          description
+          status
+          image
+          createdAt
+          updatedAt
+          profileEventsId
+          owner
+        }
+        nextToken
+      }
       description
       image
       createdAt

@@ -1,13 +1,25 @@
 import { API, graphqlOperation } from "aws-amplify";
 import { GraphQLQuery } from "@aws-amplify/api";
 import {
+  CreateProfileInput,
+  CreateProfileMutation,
   DeleteEventInput,
   EventsByDateQuery,
+  GetProfileQuery,
   ListEventsQuery,
   UpdateEventInput,
+  UpdateProfileInput,
+  UpdateProfileMutation,
 } from "../../API";
-import { eventsByDate, listEvents } from "../../graphql/queries";
-import { createEvent, updateEvent, deleteEvent } from "../../graphql/mutations";
+import { eventsByDate, getProfile } from "../../graphql/queries";
+import { vanillaListEvents } from "../../graphql/customQueries";
+import {
+  createEvent,
+  updateEvent,
+  deleteEvent,
+  createProfile,
+  updateProfile,
+} from "../../graphql/mutations";
 import { CreateEventInput, Event } from "../../API";
 
 export const fetchEvents = async ({
@@ -19,7 +31,7 @@ export const fetchEvents = async ({
 }): Promise<Event[] | undefined> => {
   try {
     const eventsData = await API.graphql<GraphQLQuery<ListEventsQuery>>(
-      graphqlOperation(listEvents, {}) // TODO: add variables
+      graphqlOperation(vanillaListEvents, {}) // TODO: add variables
     );
     return (eventsData.data?.listEvents?.items || []) as Event[];
   } catch (err) {
@@ -46,7 +58,7 @@ export const createEventRequest = async (input: CreateEventInput) => {
     return await API.graphql({
       query: createEvent,
       variables: {
-        input: { ...input, status: "pending" },
+        input: { ...input, status: "PENDING" },
       },
     });
   } catch (err) {
@@ -80,5 +92,41 @@ export const destroyEventRequest = async (input: DeleteEventInput) => {
     });
   } catch (err) {
     console.log("error destroying an event", err);
+  }
+};
+
+export const fetchProfile = async (
+  id: string
+): Promise<GetProfileQuery["getProfile"]> => {
+  try {
+    const response = await API.graphql<GraphQLQuery<GetProfileQuery>>({
+      query: getProfile,
+      variables: { id },
+    });
+    return response?.data?.getProfile;
+  } catch (err) {
+    console.log(`error getting profile for id ${id}`, err);
+  }
+};
+
+export const createProfileRequest = async (input: CreateProfileInput) => {
+  try {
+    return await API.graphql<GraphQLQuery<CreateProfileMutation>>({
+      query: createProfile,
+      variables: { input },
+    });
+  } catch (err) {
+    console.log("error creating profile", err);
+  }
+};
+
+export const updateProfileRequest = async (input: UpdateProfileInput) => {
+  try {
+    return await API.graphql<GraphQLQuery<UpdateProfileMutation>>({
+      query: updateProfile,
+      variables: { input },
+    });
+  } catch (err) {
+    console.log("error updating profile", err);
   }
 };

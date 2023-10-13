@@ -16,7 +16,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - ~~add a delete event button~~
 - style calendar event
   - ~~approved (green)/pending (blue)~~
-  - enforce 1 event/day
+  - enforce 1 event/day (api)
 - add contact info to event
   - email/phone?
 - ~~hydrate edit form with data~~
@@ -26,18 +26,19 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - ~~style Header~~
 - deploy site (netlify?)
 - enable social logins for anyone
-- show "my past/upcoming events" on profile page
+- ~~show "my past/upcoming events" on profile page~~
+- ~~hook up profile update~~
+- ~~redirect / to /events~~
 
 ### P1
 
 - notify managers of new requests
 - notify requesters when request is responded to
-- add profile info data
-  - name, email, photo, description
 - profile page
-  - create/update/delete
-  - view my events - requested/accepted/rejected
-- enforce only future can be created/updated
+  - delete profile
+  - improve ui for listing events to show more fields (cards?)
+  - make custom queries for getting events on and after a date and events before a date
+- enforce only future events can be created/updated
 - pre-populate new event form data with profile data
 
 ## Available Scripts

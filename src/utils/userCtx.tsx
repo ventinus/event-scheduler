@@ -3,11 +3,15 @@ import { Auth } from "aws-amplify";
 import { getUserGroups } from "./userUtils";
 
 interface UserContext {
+  id: string;
+  email: string;
   groups: string[];
   isManager?: boolean;
 }
 
 const initialState = {
+  id: "",
+  email: "",
   groups: [],
   isManager: undefined,
 } as UserContext;
@@ -23,10 +27,14 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       const groups = getUserGroups(user);
       userSet({
         groups,
+        id: user.attributes.sub,
+        email: user.attributes.email,
         isManager: groups.includes("Managers"),
       });
     });
   }, []);
+
+  if (!user.id) return null;
 
   return <UserCtx.Provider value={user}>{children}</UserCtx.Provider>;
 };

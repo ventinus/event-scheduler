@@ -3,22 +3,32 @@ import {
   updateEventRequest,
   createEventRequest,
   destroyEventRequest,
+  updateProfileRequest,
 } from "./api";
-import { CreateEventInput } from "../API";
+import { CreateEventInput, EventStatus, UpdateProfileInput } from "../API";
 import { paths } from "./routes";
 
-const extractEventFormData = (data: FormData): CreateEventInput => {
-  return ["title", "description", "image", "date"].reduce(
-    (acc, cur) => ({ ...acc, [cur]: data.get(cur) }),
-    {}
-  ) as CreateEventInput;
-};
+const extractFormData = (data: FormData, keys: string[]) =>
+  keys.reduce((acc, cur) => ({ ...acc, [cur]: data.get(cur) }), {});
 
-export const createEvent = async ({ request }: ActionFunctionArgs) => {
-  const event = extractEventFormData(await request.formData());
-  await createEventRequest(event);
-  return redirect(paths.eventRequested());
-};
+const extractEventFormData = (data: FormData) =>
+  extractFormData(data, [
+    "title",
+    "description",
+    "image",
+    "date",
+  ]) as CreateEventInput;
+
+const extractProfileFormData = (data: FormData) =>
+  extractFormData(data, ["name", "description", "image"]) as UpdateProfileInput;
+
+export const createEvent =
+  (profileEventsId: string) =>
+  async ({ request }: ActionFunctionArgs) => {
+    const event = extractEventFormData(await request.formData());
+    await createEventRequest({ ...event, profileEventsId });
+    return redirect(paths.eventRequested());
+  };
 
 export const updateEvent = async ({ params, request }: ActionFunctionArgs) => {
   const event = extractEventFormData(await request.formData());
@@ -34,9 +44,19 @@ export const destroyEvent = async ({ params }: ActionFunctionArgs) => {
 export const reviewEvent = async ({ params, request }: ActionFunctionArgs) => {
   const data = await request.formData();
   const id = params.dateStr as string;
-  const status = data.get("status") as string;
+  const status = data.get("status") as EventStatus;
   updateEventRequest({ id, status });
   const target =
-    status === "approved" ? paths.eventApproved() : paths.eventRejected();
+    status === EventStatus.APPROVED
+      ? paths.eventApproved()
+      : paths.eventRejected();
   return redirect(target);
 };
+
+export const updateProfile =
+  (id: string) =>
+  async ({ request }: ActionFunctionArgs) => {
+    const profile = extractProfileFormData(await request.formData());
+    await updateProfileRequest({ ...profile, id });
+    return redirect(paths.profileUpdated());
+  };
