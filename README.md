@@ -24,7 +24,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - ~~implement review event form~~
 - ~~implement authorization to review an event~~
 - ~~style Header~~
-- deploy site (netlify?)
+- deploy site (amplify)
 - enable social logins for anyone
 - ~~show "my past/upcoming events" on profile page~~
 - ~~hook up profile update~~

@@ -23,15 +23,19 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, userSet] = useState(initialState);
 
   useEffect(() => {
-    Auth.currentAuthenticatedUser().then((user) => {
-      const groups = getUserGroups(user);
-      userSet({
-        groups,
-        id: user.attributes.sub,
-        email: user.attributes.email,
-        isManager: groups.includes("Managers"),
+    Auth.currentAuthenticatedUser()
+      .then((authUser) => {
+        const groups = getUserGroups(authUser);
+        userSet({
+          groups,
+          id: authUser.attributes.sub,
+          email: authUser.attributes.email,
+          isManager: groups.includes("Managers"),
+        });
+      })
+      .catch((err) => {
+        console.log("error getting current authenticated user", err);
       });
-    });
   }, []);
 
   if (!user.id) return null;

@@ -11,7 +11,6 @@ enum EventStatus {
 
 type Event
   @model
-  @searchable
   @auth(
     rules: [
       {
@@ -39,7 +38,3 @@ type Profile @model @auth(rules: [{ allow: owner }]) {
   description: String
   image: String
 }
-
-#query SearchEvents {
-#  searchUpcomingEvents
-#}

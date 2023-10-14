@@ -21,6 +21,12 @@
       },
       "storage": {
         "mendelssohnsAssets": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d3srwgjggapz7i",
+          "type": "cicd"
+        }
       }
     }
   }

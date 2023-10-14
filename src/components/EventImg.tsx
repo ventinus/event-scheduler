@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
+import { Box, Typography } from "@mui/material";
 
 import noPhoto from "../assets/no-img-available.jpg";
 import { getStorageObject } from "../utils/fileUtils";
 import { Event } from "../API";
-import { Box, Typography } from "@mui/material";
 
 function EventImg({ image, date }: Pick<Event, "image" | "date">) {
   const [imgSrc, imgSrcSet] = useState("");
@@ -14,12 +14,11 @@ function EventImg({ image, date }: Pick<Event, "image" | "date">) {
       fileName: image,
       dateStr: date,
     }).then(imgSrcSet);
-  });
+  }, [image, date]);
 
   return (
     <Box
       sx={{
-        // width: "30%",
         textAlign: "center",
         img: { maxWidth: "100%", maxHeight: "150px" },
       }}
