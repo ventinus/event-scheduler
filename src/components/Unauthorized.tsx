@@ -1,10 +1,17 @@
-import { Typography } from "@mui/material";
+import { useLocation, useNavigate } from "react-router";
+import NotificationModal from "./NotificationModal";
+import { paths } from "../utils/routes";
 
-function Unauthorized() {
+function Unauthorized({ message }: { message?: string }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const target = location.state?.previousLocation || paths.events();
   return (
-    <Typography variant="h1">
-      You do not have access to this resource
-    </Typography>
+    <NotificationModal
+      title="Unauthorized"
+      message={message ?? "You do not have access to this resource"}
+      onClose={() => navigate(target)}
+    />
   );
 }
 

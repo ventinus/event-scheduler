@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { Typography } from "@mui/material";
 import { Unauthorized } from "../components";
 import { useUser } from "./userCtx";
 
@@ -8,7 +8,9 @@ export const withManagerAccess =
   (props: any) => {
     const isManager = useUser();
 
-    if (isManager === undefined) return <Box>checking for access</Box>;
+    // TODO: use a loading spinner
+    if (isManager === undefined)
+      return <Typography>checking for access</Typography>;
 
     return isManager ? <Component {...props} /> : <Unauthorized />;
   };

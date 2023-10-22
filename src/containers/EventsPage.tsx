@@ -3,7 +3,6 @@ import { useTheme, Container } from "@mui/material";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-// import timeGridPlugin from "@fullcalendar/timegrid";
 
 import {
   useLoaderData,
@@ -20,7 +19,7 @@ function EventsPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
-  const user = useUser();
+  const { isManager, isSignedIn } = useUser();
 
   const cachedEvents = useMemo(
     () =>
@@ -36,13 +35,20 @@ function EventsPage() {
 
   const goto = (dateStr: string) => {
     const dateHasEvent = Boolean(events.find(({ date }) => date === dateStr));
-    const target =
-      user.isManager && dateHasEvent
+    let target = "";
+    if (dateHasEvent) {
+      target = isManager
         ? paths.reviewEvent(dateStr)
         : paths.eventDetail(dateStr);
-    navigate(target, {
-      state: { previousLocation: location },
-    });
+    } else if (isSignedIn) {
+      target = paths.eventDetail(dateStr);
+    }
+
+    if (target.length) {
+      navigate(target, {
+        state: { previousLocation: location },
+      });
+    }
   };
 
   const handleDateClick = ({ dateStr }: any) => goto(dateStr);
@@ -50,6 +56,10 @@ function EventsPage() {
   const handleEventClick = ({ event }: any) => {
     const dateStr = event.start.toISOString().split("T")[0];
     goto(dateStr);
+  };
+
+  const handleMonthChange = ({ startStr, endStr }: any) => {
+    console.log("month change", startStr, endStr);
   };
 
   return (
@@ -62,6 +72,7 @@ function EventsPage() {
         events={cachedEvents}
         dateClick={handleDateClick}
         eventClick={handleEventClick}
+        datesSet={handleMonthChange}
       />
       <Outlet />
     </Container>

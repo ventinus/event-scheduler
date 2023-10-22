@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { WithAuthenticatorProps } from "@aws-amplify/ui-react";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 import {
   Box,
   Tooltip,
@@ -18,12 +18,11 @@ import Logout from "@mui/icons-material/Logout";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import { paths } from "../utils/routes";
+import { useUser } from "../utils/userCtx";
 
-interface HeaderProps {
-  onSignOut: WithAuthenticatorProps["signOut"];
-}
-
-function Header({ onSignOut }: HeaderProps) {
+function Header() {
+  const { signOut } = useAuthenticator((context) => [context.user]);
+  const { isSignedIn } = useUser();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -102,14 +101,17 @@ function Header({ onSignOut }: HeaderProps) {
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
             <MenuItem component={Link} to={paths.profile()}>
-              <Avatar /> Profile
+              <Avatar />
+              {isSignedIn ? "Profile" : "Sign in"}
             </MenuItem>
-            <MenuItem onClick={onSignOut}>
-              <ListItemIcon>
-                <Logout />
-              </ListItemIcon>
-              Logout
-            </MenuItem>
+            {isSignedIn ? (
+              <MenuItem onClick={signOut}>
+                <ListItemIcon>
+                  <Logout />
+                </ListItemIcon>
+                Logout
+              </MenuItem>
+            ) : null}
           </Menu>
         </Toolbar>
       </Container>

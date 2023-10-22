@@ -1,11 +1,9 @@
 import { LoaderFunctionArgs } from "react-router-dom";
-import { fetchEvents, fetchEvent, fetchProfile } from "./api/index";
+import { fetchCalendarEvents, fetchEvent, fetchProfile } from "./api/index";
 import { Profile } from "../API";
 
-// const wait = () => new Promise((res) => setTimeout(res, 10000));
-
 export async function eventsLoader() {
-  const events = await fetchEvents({});
+  const events = await fetchCalendarEvents({});
   return { events };
 }
 

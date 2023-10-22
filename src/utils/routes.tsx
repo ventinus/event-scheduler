@@ -45,15 +45,10 @@ export const paths = {
 export const routes: RouteObject[] = [];
 
 export const AppRouter = () => {
-  const { id, email } = useUser();
+  const { id } = useUser();
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route
-        path="/"
-        loader={profileLoader(id)}
-        element={<Root id={id} email={email} />}
-        errorElement={<ErrorPage />}
-      >
+      <Route path="/" element={<Root />} errorElement={<ErrorPage />}>
         <Route index element={<Navigate to={paths.events()} replace />} />
         <Route path="events" loader={eventsLoader} element={<EventsPage />}>
           <Route path="new" action={createEvent(id)} />

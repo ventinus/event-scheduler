@@ -5,16 +5,15 @@ import {
   InputLabel,
   Input,
   Divider,
-  TextareaAutosize,
   Button,
   Stack,
 } from "@mui/material";
 import { Form, Outlet, useLoaderData } from "react-router-dom";
+import { withAuthenticator } from "@aws-amplify/ui-react";
 
 import { Event, Profile } from "../API";
 import { ImageUpload } from "../components/ImageUpload/ImageUpload";
 import EventCardList from "../components/EventCardList";
-import { paths } from "../utils/routes";
 
 const underline = { textDecoration: "underline" };
 
@@ -53,7 +52,7 @@ function ProfilePage() {
             <Input
               id="name"
               name="name"
-              type="textarea"
+              type="text"
               defaultValue={profile.name}
             />
           </FormControl>
@@ -65,21 +64,7 @@ function ProfilePage() {
               name="description"
               placeholder="Description"
               defaultValue={profile.description ?? undefined}
-              inputComponent={TextareaAutosize}
-              minRows={3}
-              sx={(theme) => ({
-                minWidth: "100%",
-                maxWidth: "100%",
-                pt: 1,
-                pl: 1,
-                borderRadius: [
-                  theme.spacing(1),
-                  theme.spacing(1),
-                  0,
-                  theme.spacing(1),
-                ],
-                border: "1px solid black",
-              })}
+              type="text"
             />
           </FormControl>
         </Box>
@@ -113,4 +98,4 @@ function ProfilePage() {
   );
 }
 
-export default ProfilePage;
+export default withAuthenticator(ProfilePage);

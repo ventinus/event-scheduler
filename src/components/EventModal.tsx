@@ -21,6 +21,8 @@ import { LoadingButton } from "@mui/lab";
 import { paths } from "../utils/routes";
 import { Event } from "../API";
 import { ImageUpload } from "./ImageUpload/ImageUpload";
+import { useUser } from "../utils/userCtx";
+import EventImg from "./EventImg";
 
 const styles = {
   position: "absolute" as "absolute",
@@ -36,6 +38,7 @@ const styles = {
 };
 
 function EventModal() {
+  const { isSignedIn, username } = useUser();
   const { event } = useLoaderData() as { event: Event };
   const isNewEvent = !event;
 
@@ -44,6 +47,8 @@ function EventModal() {
   const { dateStr } = useParams();
   const location = useLocation();
   const target = location.state?.previousLocation || paths.events();
+
+  const isEventOwner = isNewEvent || username === event?.owner;
 
   const onClose = () => navigate(target);
   const onWithdrawClick = () => {
@@ -63,11 +68,13 @@ function EventModal() {
     >
       <Box sx={styles}>
         <Typography variant="h6" id="event-modal-title">
-          Submit Request
+          Event
         </Typography>
-        <Typography variant="body2" id="event-modal-description">
-          Interested in performing? Submit a request to perform this date.
-        </Typography>
+        {isNewEvent ? (
+          <Typography variant="body2" id="event-modal-description">
+            Interested in performing? Submit a request to perform this date.
+          </Typography>
+        ) : null}
         <fetcher.Form
           method="post"
           action={isNewEvent ? paths.newEvent() : paths.updateEvent(event.id)}
@@ -79,6 +86,7 @@ function EventModal() {
               name="title"
               type="text"
               defaultValue={event?.title}
+              readOnly={!isEventOwner}
             />
           </FormControl>
 
@@ -95,43 +103,50 @@ function EventModal() {
               name="description"
               type="text"
               defaultValue={event?.description}
+              readOnly={!isEventOwner}
             />
           </FormControl>
 
-          <ImageUpload
-            id="event-image"
-            name="image"
-            dateStr={dateStr as string}
-            fileName={event?.image}
-          />
+          {isEventOwner ? (
+            <ImageUpload
+              id="event-image"
+              name="image"
+              dateStr={dateStr as string}
+              fileName={event?.image}
+            />
+          ) : (
+            <EventImg image={event?.image} date={event?.date} />
+          )}
 
-          <Box
-            sx={{
-              textAlign: "right",
-              "& > * + *": {
-                ml: (theme: Theme) => `${theme.spacing(2)} !important`,
-              },
-            }}
-          >
-            {!isNewEvent ? (
-              <LoadingButton
-                color="error"
-                variant="outlined"
-                onClick={onWithdrawClick}
-              >
-                Withdraw
-              </LoadingButton>
-            ) : null}
-            <LoadingButton
-              type="submit"
-              variant="contained"
-              color="primary"
-              disableElevation
-              loading={fetcher.state === "submitting"}
+          {isSignedIn ? (
+            <Box
+              sx={{
+                textAlign: "right",
+                "& > * + *": {
+                  ml: (theme: Theme) => `${theme.spacing(2)} !important`,
+                },
+              }}
             >
-              {isNewEvent ? "Create" : "Update"}
-            </LoadingButton>
-          </Box>
+              {!isNewEvent ? (
+                <LoadingButton
+                  color="error"
+                  variant="outlined"
+                  onClick={onWithdrawClick}
+                >
+                  Withdraw
+                </LoadingButton>
+              ) : null}
+              <LoadingButton
+                type="submit"
+                variant="contained"
+                color="primary"
+                disableElevation
+                loading={fetcher.state === "submitting"}
+              >
+                {isNewEvent ? "Create" : "Update"}
+              </LoadingButton>
+            </Box>
+          ) : null}
         </fetcher.Form>
         <IconButton
           aria-label="close"

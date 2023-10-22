@@ -2,6 +2,8 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+Hosted at https://main.d3srwgjggapz7i.amplifyapp.com (needs bug fixes...)
+
 ## Next steps
 
 ### P0
@@ -16,7 +18,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - ~~add a delete event button~~
 - style calendar event
   - ~~approved (green)/pending (blue)~~
-  - enforce 1 event/day (api)
+  - enforce 1 pending or approved event per day (FE and api)
+  - ~~filter out either denied or cancelled events, another event can be created for that day~~
 - add contact info to event
   - email/phone?
 - ~~hydrate edit form with data~~
@@ -24,11 +27,15 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - ~~implement review event form~~
 - ~~implement authorization to review an event~~
 - ~~style Header~~
-- deploy site (amplify)
+- ~~deploy site (amplify)~~
 - enable social logins for anyone
 - ~~show "my past/upcoming events" on profile page~~
 - ~~hook up profile update~~
 - ~~redirect / to /events~~
+- ~~!! resolve hybrid of public vs authenticated interactions !!~~
+  - ~~!! render action buttons which the current user is authorized to do !!~~
+- improve styling and customizability of `withManagerAccess` to render in a modal
+- add path alias to webpack and jest
 
 ### P1
 
@@ -36,7 +43,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - notify requesters when request is responded to
 - profile page
   - delete profile
-  - improve ui for listing events to show more fields (cards?)
+  - ~~improve ui for listing events to show more fields (cards?)~~
   - make custom queries for getting events on and after a date and events before a date
 - enforce only future events can be created/updated
 - pre-populate new event form data with profile data

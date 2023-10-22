@@ -1,34 +1,30 @@
-import { Form, useFetcher } from "react-router-dom";
-import {
-  Button,
-  Modal,
-  FormControl,
-  InputLabel,
-  Input,
-  Box,
-  Typography,
-  IconButton,
-} from "@mui/material";
+import { useState } from "react";
+import { Modal, Box, Typography, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { LoadingButton } from "@mui/lab";
 
 interface NotificationModalProps {
   title: string;
   message: string;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
-function NotificationModal({
+export default function NotificationModal({
   title,
   message,
   onClose,
 }: NotificationModalProps) {
+  const [isOpen, isOpenSet] = useState(true);
+  const onDismiss = () => {
+    isOpenSet(false);
+    if (onClose) onClose();
+  };
+
   return (
     <Modal
-      open
+      open={isOpen}
       aria-labelledby="notification-modal-title"
       aria-describedby="notification-modal-description"
-      onClose={onClose}
+      onClose={onDismiss}
     >
       <Box>
         <Typography variant="h6" id="notification-modal-title">
@@ -40,7 +36,7 @@ function NotificationModal({
         <IconButton
           aria-label="close"
           sx={{ position: "absolute", top: 8, right: 8 }}
-          onClick={onClose}
+          onClick={onDismiss}
         >
           <CloseIcon />
         </IconButton>

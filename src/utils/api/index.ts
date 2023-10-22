@@ -1,18 +1,24 @@
-import { API, graphqlOperation } from "aws-amplify";
+import { API } from "aws-amplify";
 import { GraphQLQuery } from "@aws-amplify/api";
+import { GraphQLOptions } from "@aws-amplify/api-graphql";
 import {
   CreateProfileInput,
   CreateProfileMutation,
   DeleteEventInput,
+  EventStatus,
   EventsByDateQuery,
   GetProfileQuery,
   ListEventsQuery,
+  ModelEventFilterInput,
   UpdateEventInput,
   UpdateProfileInput,
   UpdateProfileMutation,
 } from "../../API";
-import { eventsByDate, getProfile } from "../../graphql/queries";
-import { vanillaListEvents } from "../../graphql/customQueries";
+import { getProfile } from "../../graphql/queries";
+import {
+  vanillaEventsByDate,
+  vanillaListEvents,
+} from "../../graphql/customQueries";
 import {
   createEvent,
   updateEvent,
@@ -22,17 +28,62 @@ import {
 } from "../../graphql/mutations";
 import { CreateEventInput, Event } from "../../API";
 
+const eventsRangeFilter = (
+  startDate?: string,
+  endDate?: string
+): ModelEventFilterInput => {
+  let filter = {} as ModelEventFilterInput;
+  if (startDate || endDate) filter.and = [];
+  if (startDate) filter.and?.push({ date: { ge: startDate } });
+  if (endDate) filter.and?.push({ date: { le: startDate } });
+  return filter;
+};
+
+const approvedAndPendingFilter = {
+  or: [EventStatus.APPROVED, EventStatus.PENDING].map((status) => ({
+    status: { eq: status },
+  })),
+};
+
 export const fetchEvents = async ({
   startDate,
   endDate,
 }: {
-  startDate?: String;
-  endDate?: String;
+  startDate?: string;
+  endDate?: string;
 }): Promise<Event[] | undefined> => {
   try {
-    const eventsData = await API.graphql<GraphQLQuery<ListEventsQuery>>(
-      graphqlOperation(vanillaListEvents, {}) // TODO: add variables
-    );
+    const eventsData = await API.graphql<GraphQLQuery<ListEventsQuery>>({
+      query: vanillaListEvents,
+      variables: {
+        filter: eventsRangeFilter(startDate, endDate),
+      },
+      authMode: "API_KEY",
+    });
+    return (eventsData.data?.listEvents?.items || []) as Event[];
+  } catch (err) {
+    console.log("error fetching events", err);
+  }
+};
+
+export const fetchCalendarEvents = async ({
+  startDate,
+  endDate,
+}: {
+  startDate?: string;
+  endDate?: string;
+}): Promise<Event[] | undefined> => {
+  try {
+    const eventsData = await API.graphql<GraphQLQuery<ListEventsQuery>>({
+      query: vanillaListEvents,
+      variables: {
+        filter: Object.assign(
+          approvedAndPendingFilter,
+          eventsRangeFilter(startDate, endDate)
+        ),
+      },
+      authMode: "API_KEY",
+    });
     return (eventsData.data?.listEvents?.items || []) as Event[];
   } catch (err) {
     console.log("error fetching events", err);
@@ -43,9 +94,14 @@ export const fetchEvent = async (
   dateStr: string
 ): Promise<Event | undefined> => {
   try {
-    const data = await API.graphql<GraphQLQuery<EventsByDateQuery>>(
-      graphqlOperation(eventsByDate, { date: dateStr })
-    );
+    const data = await API.graphql<GraphQLQuery<EventsByDateQuery>>({
+      query: vanillaEventsByDate,
+      variables: {
+        date: dateStr,
+        filter: approvedAndPendingFilter,
+      },
+      authMode: "API_KEY",
+    });
     const events = (data.data?.eventsByDate?.items as Event[]) || [];
     return events[0];
   } catch (err) {
@@ -58,7 +114,7 @@ export const createEventRequest = async (input: CreateEventInput) => {
     return await API.graphql({
       query: createEvent,
       variables: {
-        input: { ...input, status: "PENDING" },
+        input: { ...input, status: EventStatus.PENDING },
       },
     });
   } catch (err) {
@@ -96,11 +152,13 @@ export const destroyEventRequest = async (input: DeleteEventInput) => {
 };
 
 export const fetchProfile = async (
-  id: string
+  id: string,
+  opts?: { query: GraphQLOptions["query"] }
 ): Promise<GetProfileQuery["getProfile"]> => {
+  const query = opts?.query ?? getProfile;
   try {
     const response = await API.graphql<GraphQLQuery<GetProfileQuery>>({
-      query: getProfile,
+      query,
       variables: { id },
     });
     return response?.data?.getProfile;

@@ -13,6 +13,7 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import { Authenticator } from "@aws-amplify/ui-react";
 
 const isLocalhost = Boolean(
   window.location.hostname === "localhost" ||
@@ -48,11 +49,13 @@ Amplify.configure(updatedAwsConfig);
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <UserProvider>
-      <AlertProvider>
-        <AppRouter />
-      </AlertProvider>
-    </UserProvider>
+    <Authenticator.Provider>
+      <UserProvider>
+        <AlertProvider>
+          <AppRouter />
+        </AlertProvider>
+      </UserProvider>
+    </Authenticator.Provider>
   </React.StrictMode>
 );
 

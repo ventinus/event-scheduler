@@ -12,8 +12,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import { LoadingButton } from "@mui/lab";
 
 import { paths } from "../utils/routes";
-import { Event } from "../API";
+import { Event, EventStatus } from "../API";
 import EventImg from "./EventImg";
+import { useUser } from "../utils/userCtx";
 
 const styles = {
   position: "absolute" as "absolute",
@@ -65,9 +66,8 @@ const eventToDescriptionList = ({
 ];
 
 function ReviewEventModal() {
+  const { isManager } = useUser();
   const { event } = useLoaderData() as { event: Event };
-  console.log(event?.image?.length ? event : null);
-
   const fetcher = useFetcher();
   const navigate = useNavigate();
   const location = useLocation();
@@ -87,58 +87,68 @@ function ReviewEventModal() {
           Review Request
         </Typography>
         <Typography variant="body2" id="review-event-modal-description">
-          Interested in performing? Submit a request to perform this date.
+          {!isManager
+            ? "You do not have access to review events"
+            : "Please approve or deny this request"}
         </Typography>
-        <dl>
-          {eventToDescriptionList(event).map(({ label, value }) => (
-            <Fragment key={label}>
-              <dt>{label}:</dt>
-              <dd>{value}</dd>
-            </Fragment>
-          ))}
-        </dl>
-        <EventImg image={event.image} date={event.date} />
-        <Box
-          sx={{
-            textAlign: "right",
-            "& > *": { display: "inline-block" },
-            "& > * + *": {
-              ml: (theme: Theme) => `${theme.spacing(2)} !important`,
-            },
-          }}
-        >
-          <fetcher.Form method="post" action={paths.reviewEvent(event.id)}>
-            <input type="hidden" name="status" value="rejected" />
-            <LoadingButton
-              type="submit"
-              variant="outlined"
-              color="error"
-              disableElevation
-              loading={fetcher.state === "submitting"}
+        {!isManager ? null : (
+          <>
+            <dl>
+              {eventToDescriptionList(event).map(({ label, value }) => (
+                <Fragment key={label}>
+                  <dt>{label}:</dt>
+                  <dd>{value}</dd>
+                </Fragment>
+              ))}
+            </dl>
+            <EventImg image={event.image} date={event.date} />
+            <Box
+              sx={{
+                textAlign: "right",
+                "& > *": { display: "inline-block" },
+                "& > * + *": {
+                  ml: (theme: Theme) => `${theme.spacing(2)} !important`,
+                },
+              }}
             >
-              Deny
-            </LoadingButton>
-          </fetcher.Form>
-          <fetcher.Form method="post" action={paths.reviewEvent(event.id)}>
-            <input type="hidden" name="status" value="approved" />
-            <LoadingButton
-              type="submit"
-              variant="contained"
-              color="primary"
-              disableElevation
-              loading={fetcher.state === "submitting"}
+              <fetcher.Form method="post" action={paths.reviewEvent(event.id)}>
+                <input type="hidden" name="status" value={EventStatus.DENIED} />
+                <LoadingButton
+                  type="submit"
+                  variant="outlined"
+                  color="error"
+                  disableElevation
+                  loading={fetcher.state === "submitting"}
+                >
+                  Deny
+                </LoadingButton>
+              </fetcher.Form>
+              <fetcher.Form method="post" action={paths.reviewEvent(event.id)}>
+                <input
+                  type="hidden"
+                  name="status"
+                  value={EventStatus.APPROVED}
+                />
+                <LoadingButton
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  disableElevation
+                  loading={fetcher.state === "submitting"}
+                >
+                  Approve
+                </LoadingButton>
+              </fetcher.Form>
+            </Box>
+            <IconButton
+              aria-label="close"
+              sx={{ position: "absolute", top: 8, right: 8 }}
+              onClick={onClose}
             >
-              Approve
-            </LoadingButton>
-          </fetcher.Form>
-        </Box>
-        <IconButton
-          aria-label="close"
-          sx={{ position: "absolute", top: 8, right: 8 }}
-          onClick={onClose}
-        >
-          <CloseIcon />
-        </IconButton>
+              <CloseIcon />
+            </IconButton>
+          </>
+        )}
       </Box>
     </Modal>
   );
