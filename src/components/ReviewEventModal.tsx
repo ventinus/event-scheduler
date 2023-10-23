@@ -1,6 +1,4 @@
 import { Fragment } from "react";
-import { withManagerAccess } from "../utils/withManagerAccess";
-
 import {
   useFetcher,
   useLoaderData,
@@ -15,6 +13,8 @@ import { paths } from "../utils/routes";
 import { Event, EventStatus } from "../API";
 import EventImg from "./EventImg";
 import { useUser } from "../utils/userCtx";
+import { dateIsInPast } from "../utils/dateUtils";
+import { withManagerAccess } from "../utils/withManagerAccess";
 
 const styles = {
   position: "absolute" as "absolute",
@@ -72,6 +72,7 @@ function ReviewEventModal() {
   const navigate = useNavigate();
   const location = useLocation();
   const target = location.state?.previousLocation || paths.events();
+  const isEventInPast = dateIsInPast(event.date);
 
   const onClose = () => navigate(target);
 
@@ -102,44 +103,56 @@ function ReviewEventModal() {
               ))}
             </dl>
             <EventImg image={event.image} date={event.date} />
-            <Box
-              sx={{
-                textAlign: "right",
-                "& > *": { display: "inline-block" },
-                "& > * + *": {
-                  ml: (theme: Theme) => `${theme.spacing(2)} !important`,
-                },
-              }}
-            >
-              <fetcher.Form method="post" action={paths.reviewEvent(event.id)}>
-                <input type="hidden" name="status" value={EventStatus.DENIED} />
-                <LoadingButton
-                  type="submit"
-                  variant="outlined"
-                  color="error"
-                  disableElevation
-                  loading={fetcher.state === "submitting"}
+            {isEventInPast ? null : (
+              <Box
+                sx={{
+                  textAlign: "right",
+                  "& > *": { display: "inline-block" },
+                  "& > * + *": {
+                    ml: (theme: Theme) => `${theme.spacing(2)} !important`,
+                  },
+                }}
+              >
+                <fetcher.Form
+                  method="post"
+                  action={paths.reviewEvent(event.id)}
                 >
-                  Deny
-                </LoadingButton>
-              </fetcher.Form>
-              <fetcher.Form method="post" action={paths.reviewEvent(event.id)}>
-                <input
-                  type="hidden"
-                  name="status"
-                  value={EventStatus.APPROVED}
-                />
-                <LoadingButton
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  disableElevation
-                  loading={fetcher.state === "submitting"}
+                  <input
+                    type="hidden"
+                    name="status"
+                    value={EventStatus.DENIED}
+                  />
+                  <LoadingButton
+                    type="submit"
+                    variant="outlined"
+                    color="error"
+                    disableElevation
+                    loading={fetcher.state === "submitting"}
+                  >
+                    Deny
+                  </LoadingButton>
+                </fetcher.Form>
+                <fetcher.Form
+                  method="post"
+                  action={paths.reviewEvent(event.id)}
                 >
-                  Approve
-                </LoadingButton>
-              </fetcher.Form>
-            </Box>
+                  <input
+                    type="hidden"
+                    name="status"
+                    value={EventStatus.APPROVED}
+                  />
+                  <LoadingButton
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    disableElevation
+                    loading={fetcher.state === "submitting"}
+                  >
+                    Approve
+                  </LoadingButton>
+                </fetcher.Form>
+              </Box>
+            )}
             <IconButton
               aria-label="close"
               sx={{ position: "absolute", top: 8, right: 8 }}

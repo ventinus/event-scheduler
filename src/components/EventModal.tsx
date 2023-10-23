@@ -23,6 +23,12 @@ import { Event } from "../API";
 import { ImageUpload } from "./ImageUpload/ImageUpload";
 import { useUser } from "../utils/userCtx";
 import EventImg from "./EventImg";
+import {
+  dateIsInFuture,
+  dateIsInNearFuture,
+  dateIsInPast,
+} from "../utils/dateUtils";
+import NotificationModal from "./NotificationModal";
 
 const styles = {
   position: "absolute" as "absolute",
@@ -44,11 +50,12 @@ function EventModal() {
 
   const fetcher = useFetcher();
   const navigate = useNavigate();
-  const { dateStr } = useParams();
+  const { dateStr } = useParams() as { dateStr: string };
   const location = useLocation();
   const target = location.state?.previousLocation || paths.events();
 
   const isEventOwner = isNewEvent || username === event?.owner;
+  const isEventInPast = dateIsInPast(dateStr);
 
   const onClose = () => navigate(target);
   const onWithdrawClick = () => {
@@ -58,6 +65,26 @@ function EventModal() {
       { method: "post", action: `/events/${event.id}/destroy` }
     );
   };
+
+  if (isNewEvent) {
+    if (isEventInPast) {
+      return (
+        <NotificationModal
+          title="Date passed"
+          message="Events cannot be created in the past"
+          onClose={onClose}
+        />
+      );
+    } else if (!dateIsInNearFuture(dateStr)) {
+      return (
+        <NotificationModal
+          title="Date too far"
+          message="Events can only be created for the next 2 months"
+          onClose={onClose}
+        />
+      );
+    }
+  }
 
   return (
     <Modal
@@ -111,7 +138,7 @@ function EventModal() {
             <ImageUpload
               id="event-image"
               name="image"
-              dateStr={dateStr as string}
+              dateStr={dateStr}
               fileName={event?.image}
             />
           ) : (
@@ -127,7 +154,7 @@ function EventModal() {
                 },
               }}
             >
-              {!isNewEvent ? (
+              {!isNewEvent && !isEventInPast ? (
                 <LoadingButton
                   color="error"
                   variant="outlined"
@@ -136,15 +163,17 @@ function EventModal() {
                   Withdraw
                 </LoadingButton>
               ) : null}
-              <LoadingButton
-                type="submit"
-                variant="contained"
-                color="primary"
-                disableElevation
-                loading={fetcher.state === "submitting"}
-              >
-                {isNewEvent ? "Create" : "Update"}
-              </LoadingButton>
+              {!isEventInPast ? (
+                <LoadingButton
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  disableElevation
+                  loading={fetcher.state === "submitting"}
+                >
+                  {isNewEvent ? "Create" : "Update"}
+                </LoadingButton>
+              ) : null}
             </Box>
           ) : null}
         </fetcher.Form>

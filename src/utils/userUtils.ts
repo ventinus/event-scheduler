@@ -29,5 +29,3 @@ export const getUserGroups = (user?: CognitoUser): string[] => {
 
   return attributes[groupsKey] || [];
 };
-
-export const isManager = (groups: string[]) => groups.includes("Managers");

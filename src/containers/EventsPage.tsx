@@ -1,21 +1,23 @@
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useTheme, Container } from "@mui/material";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
-import {
-  useLoaderData,
-  useNavigate,
-  useLocation,
-  Outlet,
-} from "react-router-dom";
-import { EventStatus, type Event } from "../API";
+import { useNavigate, useLocation, Outlet } from "react-router-dom";
+import { EventStatus } from "../API";
 import { paths } from "../utils/routes";
 import { useUser } from "../utils/userCtx";
+import { useListEvents } from "../utils/api/hooks";
+import {
+  dateIsInFuture,
+  dateIsInNearFuture,
+  isoToDate,
+} from "../utils/dateUtils";
 
 function EventsPage() {
-  const { events } = useLoaderData() as { events: Event[] };
+  const [dateRange, dateRangeSet] = useState({ startDate: "", endDate: "" });
+  const { data: events = [] } = useListEvents(dateRange);
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
@@ -40,7 +42,7 @@ function EventsPage() {
       target = isManager
         ? paths.reviewEvent(dateStr)
         : paths.eventDetail(dateStr);
-    } else if (isSignedIn) {
+    } else if (isSignedIn && dateIsInNearFuture(dateStr)) {
       target = paths.eventDetail(dateStr);
     }
 
@@ -54,12 +56,15 @@ function EventsPage() {
   const handleDateClick = ({ dateStr }: any) => goto(dateStr);
 
   const handleEventClick = ({ event }: any) => {
-    const dateStr = event.start.toISOString().split("T")[0];
+    const dateStr = isoToDate(event.start.toISOString());
     goto(dateStr);
   };
 
   const handleMonthChange = ({ startStr, endStr }: any) => {
-    console.log("month change", startStr, endStr);
+    dateRangeSet({
+      startDate: isoToDate(startStr),
+      endDate: isoToDate(endStr),
+    });
   };
 
   return (

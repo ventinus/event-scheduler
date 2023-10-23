@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { Container } from "@mui/material";
-import "@aws-amplify/ui-react/styles.css";
 
 import { Header } from "../components";
 
@@ -17,16 +16,12 @@ function Root() {
 
   useEffect(() => {
     if (isSignedIn) {
-      fetchProfile(id).then((profile) => {
-        if (!profile) {
-          createProfileRequest({ id, name: email }).then(() => {
-            if (pathname !== paths.profile()) {
-              alert.setInfo(
-                "Head over to your [profile page](/profile) to finish registration"
-              );
-            }
-          });
-        }
+      fetchProfile(id).catch(() => {
+        createProfileRequest({ id, name: email }).then(() => {
+          if (pathname !== paths.profile()) {
+            alert.setInfo("Head over to your profile to finish registration");
+          }
+        });
       });
     }
   }, [isSignedIn]);

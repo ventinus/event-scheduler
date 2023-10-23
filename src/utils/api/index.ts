@@ -35,7 +35,7 @@ const eventsRangeFilter = (
   let filter = {} as ModelEventFilterInput;
   if (startDate || endDate) filter.and = [];
   if (startDate) filter.and?.push({ date: { ge: startDate } });
-  if (endDate) filter.and?.push({ date: { le: startDate } });
+  if (endDate) filter.and?.push({ date: { le: endDate } });
   return filter;
 };
 
@@ -156,15 +156,11 @@ export const fetchProfile = async (
   opts?: { query: GraphQLOptions["query"] }
 ): Promise<GetProfileQuery["getProfile"]> => {
   const query = opts?.query ?? getProfile;
-  try {
-    const response = await API.graphql<GraphQLQuery<GetProfileQuery>>({
-      query,
-      variables: { id },
-    });
-    return response?.data?.getProfile;
-  } catch (err) {
-    console.log(`error getting profile for id ${id}`, err);
-  }
+  const response = await API.graphql<GraphQLQuery<GetProfileQuery>>({
+    query,
+    variables: { id },
+  });
+  return response?.data?.getProfile;
 };
 
 export const createProfileRequest = async (input: CreateProfileInput) => {

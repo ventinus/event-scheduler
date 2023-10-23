@@ -24,8 +24,8 @@ const initialState = {
 
 const AlertCtx = createContext({} as AlertContext);
 
-// TODO: use better type for children
-export const AlertProvider = ({ children }: { children: React.ReactNode }) => {
+// TODO: convert message from markdown to jsx
+export const AlertProvider = ({ children }: React.PropsWithChildren) => {
   const [alert, alertSet] = useState(initialState);
 
   const setError = (message: string) =>

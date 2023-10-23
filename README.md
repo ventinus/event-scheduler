@@ -2,7 +2,7 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-Hosted at https://main.d3srwgjggapz7i.amplifyapp.com (needs bug fixes...)
+Hosted at https://main.d3srwgjggapz7i.amplifyapp.com
 
 ## Next steps
 
@@ -18,7 +18,7 @@ Hosted at https://main.d3srwgjggapz7i.amplifyapp.com (needs bug fixes...)
 - ~~add a delete event button~~
 - style calendar event
   - ~~approved (green)/pending (blue)~~
-  - enforce 1 pending or approved event per day (FE and api)
+  - ~~enforce 1 pending or approved event per day~~
   - ~~filter out either denied or cancelled events, another event can be created for that day~~
 - add contact info to event
   - email/phone?
@@ -34,8 +34,9 @@ Hosted at https://main.d3srwgjggapz7i.amplifyapp.com (needs bug fixes...)
 - ~~redirect / to /events~~
 - ~~!! resolve hybrid of public vs authenticated interactions !!~~
   - ~~!! render action buttons which the current user is authorized to do !!~~
-- improve styling and customizability of `withManagerAccess` to render in a modal
+- ~~improve styling and customizability of `withManagerAccess` to render in a modal~~
 - add path alias to webpack and jest
+- handle api loader errors correctly
 
 ### P1
 
@@ -44,9 +45,16 @@ Hosted at https://main.d3srwgjggapz7i.amplifyapp.com (needs bug fixes...)
 - profile page
   - delete profile
   - ~~improve ui for listing events to show more fields (cards?)~~
-  - make custom queries for getting events on and after a date and events before a date
-- enforce only future events can be created/updated
+- ~~make custom queries for getting events on and after a date and events before a date~~
+- ~~enforce only events in the near future can be created/updated~~
 - pre-populate new event form data with profile data
+
+### P2
+
+- backend validation
+  - enforce 1 pending or approved event per day
+  - enforce only events in the near future can be created
+  - past events cannot be modified
 
 ## Available Scripts
 

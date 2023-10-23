@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography } from "@mui/material";
+import { CircularProgress, Box } from "@mui/material";
 import { Unauthorized } from "../components";
 import { useUser } from "./userCtx";
 
@@ -8,9 +8,21 @@ export const withManagerAccess =
   (props: any) => {
     const isManager = useUser();
 
-    // TODO: use a loading spinner
-    if (isManager === undefined)
-      return <Typography>checking for access</Typography>;
+    if (isManager === undefined) {
+      return (
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: 10,
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      );
+    }
 
     return isManager ? <Component {...props} /> : <Unauthorized />;
   };

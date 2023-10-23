@@ -1,19 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Amplify } from "aws-amplify";
+import { Authenticator } from "@aws-amplify/ui-react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import reportWebVitals from "./reportWebVitals";
 import awsConfig from "./aws-exports";
 import { AppRouter } from "./utils/routes";
-import "./index.css";
 import { AlertProvider } from "./utils/alertCtx";
 import { UserProvider } from "./utils/userCtx";
+import "./index.css";
 
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import { Authenticator } from "@aws-amplify/ui-react";
+import "@aws-amplify/ui-react/styles.css";
+
+const queryClient = new QueryClient();
 
 const isLocalhost = Boolean(
   window.location.hostname === "localhost" ||
@@ -50,11 +54,13 @@ Amplify.configure(updatedAwsConfig);
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Authenticator.Provider>
-      <UserProvider>
-        <AlertProvider>
-          <AppRouter />
-        </AlertProvider>
-      </UserProvider>
+      <QueryClientProvider client={queryClient}>
+        <UserProvider>
+          <AlertProvider>
+            <AppRouter />
+          </AlertProvider>
+        </UserProvider>
+      </QueryClientProvider>
     </Authenticator.Provider>
   </React.StrictMode>
 );

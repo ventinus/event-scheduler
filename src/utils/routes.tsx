@@ -50,6 +50,10 @@ export const AppRouter = () => {
     createRoutesFromElements(
       <Route path="/" element={<Root />} errorElement={<ErrorPage />}>
         <Route index element={<Navigate to={paths.events()} replace />} />
+        <Route
+          path="signout"
+          element={<Navigate to={paths.events()} replace />}
+        />
         <Route path="events" loader={eventsLoader} element={<EventsPage />}>
           <Route path="new" action={createEvent(id)} />
           {eventAlertVariants.map((variant) => (
