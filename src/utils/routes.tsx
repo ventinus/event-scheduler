@@ -5,6 +5,7 @@ import {
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
+  useRouteError,
 } from "react-router-dom";
 import {
   Root,
@@ -24,6 +25,7 @@ import {
   updateProfile,
 } from "./actions";
 import { useUser } from "./userCtx";
+import { Typography } from "@mui/material";
 
 export const paths = {
   home: () => "/",
@@ -48,13 +50,18 @@ export const AppRouter = () => {
   const { id } = useUser();
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<Root />} errorElement={<ErrorPage />}>
+      <Route path="/" element={<Root />}>
         <Route index element={<Navigate to={paths.events()} replace />} />
         <Route
           path="signout"
           element={<Navigate to={paths.events()} replace />}
         />
-        <Route path="events" loader={eventsLoader} element={<EventsPage />}>
+        <Route
+          path="events"
+          loader={eventsLoader}
+          element={<EventsPage />}
+          errorElement={<ErrorPage />}
+        >
           <Route path="new" action={createEvent(id)} />
           {eventAlertVariants.map((variant) => (
             <Route

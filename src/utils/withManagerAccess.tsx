@@ -1,7 +1,7 @@
 import React from "react";
-import { CircularProgress, Box } from "@mui/material";
 import { Unauthorized } from "../components";
 import { useUser } from "./userCtx";
+import Loader from "../components/Loader";
 
 export const withManagerAccess =
   (Component: React.FunctionComponent): React.FunctionComponent =>
@@ -9,19 +9,7 @@ export const withManagerAccess =
     const isManager = useUser();
 
     if (isManager === undefined) {
-      return (
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            zIndex: 10,
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      );
+      return <Loader />;
     }
 
     return isManager ? <Component {...props} /> : <Unauthorized />;

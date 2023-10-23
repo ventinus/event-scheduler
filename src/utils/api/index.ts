@@ -51,19 +51,15 @@ export const fetchEvents = async ({
 }: {
   startDate?: string;
   endDate?: string;
-}): Promise<Event[] | undefined> => {
-  try {
-    const eventsData = await API.graphql<GraphQLQuery<ListEventsQuery>>({
-      query: vanillaListEvents,
-      variables: {
-        filter: eventsRangeFilter(startDate, endDate),
-      },
-      authMode: "API_KEY",
-    });
-    return (eventsData.data?.listEvents?.items || []) as Event[];
-  } catch (err) {
-    console.log("error fetching events", err);
-  }
+}): Promise<Event[]> => {
+  const eventsData = await API.graphql<GraphQLQuery<ListEventsQuery>>({
+    query: vanillaListEvents,
+    variables: {
+      filter: eventsRangeFilter(startDate, endDate),
+    },
+    authMode: "API_KEY",
+  });
+  return (eventsData.data?.listEvents?.items || []) as Event[];
 };
 
 export const fetchCalendarEvents = async ({
@@ -72,57 +68,45 @@ export const fetchCalendarEvents = async ({
 }: {
   startDate?: string;
   endDate?: string;
-}): Promise<Event[] | undefined> => {
-  try {
-    const eventsData = await API.graphql<GraphQLQuery<ListEventsQuery>>({
-      query: vanillaListEvents,
-      variables: {
-        filter: Object.assign(
-          approvedAndPendingFilter,
-          eventsRangeFilter(startDate, endDate)
-        ),
-      },
-      authMode: "API_KEY",
-    });
-    return (eventsData.data?.listEvents?.items || []) as Event[];
-  } catch (err) {
-    console.log("error fetching events", err);
-  }
+}): Promise<Event[]> => {
+  const eventsData = await API.graphql<GraphQLQuery<ListEventsQuery>>({
+    query: vanillaListEvents,
+    variables: {
+      filter: Object.assign(
+        approvedAndPendingFilter,
+        eventsRangeFilter(startDate, endDate)
+      ),
+    },
+    authMode: "API_KEY",
+  });
+  return (eventsData.data?.listEvents?.items || []) as Event[];
 };
 
 export const fetchEvent = async (
   dateStr: string
-): Promise<Event | undefined> => {
-  try {
-    const data = await API.graphql<GraphQLQuery<EventsByDateQuery>>({
-      query: vanillaEventsByDate,
-      variables: {
-        date: dateStr,
-        filter: approvedAndPendingFilter,
-      },
-      authMode: "API_KEY",
-    });
-    const events = (data.data?.eventsByDate?.items as Event[]) || [];
-    return events[0];
-  } catch (err) {
-    console.log(`error fetching event with id ${dateStr}`, err);
-  }
+): Promise<Event> => {
+  const data = await API.graphql<GraphQLQuery<EventsByDateQuery>>({
+    query: vanillaEventsByDate,
+    variables: {
+      date: dateStr,
+      filter: approvedAndPendingFilter,
+    },
+    authMode: "API_KEY",
+  });
+  const events = (data.data?.eventsByDate?.items as Event[]) || [];
+  return events[0];
 };
 
-export const createEventRequest = async (input: CreateEventInput) => {
-  try {
-    return await API.graphql({
-      query: createEvent,
-      variables: {
-        input: { ...input, status: EventStatus.PENDING },
-      },
-    });
-  } catch (err) {
-    console.log("error creating an event", err);
-  }
+export const createEventRequest = (input: CreateEventInput) => {
+  return API.graphql({
+    query: createEvent,
+    variables: {
+      input: { ...input, status: EventStatus.PENDING },
+    },
+  });
 };
 
-export const updateEventRequest = async (input: UpdateEventInput) => {
+export const updateEventRequest = (input: UpdateEventInput) => {
   // if (!eventId || !data) {
   //   throw new Error(
   //     `eventId and data required to update an event id: ${eventId}, data: ${JSON.stringify(
@@ -130,25 +114,18 @@ export const updateEventRequest = async (input: UpdateEventInput) => {
   //     )}`
   //   );
   // }
-  try {
-    return await API.graphql({
-      query: updateEvent,
-      variables: { input },
-    });
-  } catch (err) {
-    console.log("error updating an event", err);
-  }
+
+  return API.graphql({
+    query: updateEvent,
+    variables: { input },
+  });
 };
 
-export const destroyEventRequest = async (input: DeleteEventInput) => {
-  try {
-    return await API.graphql({
-      query: deleteEvent,
-      variables: { input },
-    });
-  } catch (err) {
-    console.log("error destroying an event", err);
-  }
+export const destroyEventRequest = (input: DeleteEventInput) => {
+  return API.graphql({
+    query: deleteEvent,
+    variables: { input },
+  });
 };
 
 export const fetchProfile = async (
@@ -163,24 +140,16 @@ export const fetchProfile = async (
   return response?.data?.getProfile;
 };
 
-export const createProfileRequest = async (input: CreateProfileInput) => {
-  try {
-    return await API.graphql<GraphQLQuery<CreateProfileMutation>>({
-      query: createProfile,
-      variables: { input },
-    });
-  } catch (err) {
-    console.log("error creating profile", err);
-  }
+export const createProfileRequest = (input: CreateProfileInput) => {
+  return API.graphql<GraphQLQuery<CreateProfileMutation>>({
+    query: createProfile,
+    variables: { input },
+  });
 };
 
-export const updateProfileRequest = async (input: UpdateProfileInput) => {
-  try {
-    return await API.graphql<GraphQLQuery<UpdateProfileMutation>>({
-      query: updateProfile,
-      variables: { input },
-    });
-  } catch (err) {
-    console.log("error updating profile", err);
-  }
+export const updateProfileRequest = (input: UpdateProfileInput) => {
+  return API.graphql<GraphQLQuery<UpdateProfileMutation>>({
+    query: updateProfile,
+    variables: { input },
+  });
 };

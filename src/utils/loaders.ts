@@ -15,7 +15,7 @@ export async function eventLoader({ params }: LoaderFunctionArgs) {
 }
 
 export const profileLoader = (id?: string) => async () => {
-  if (!id) return null;
+  if (!id) return {};
   const profile = await retry(() => fetchProfile(id));
   return { profile } as { profile: Profile };
 };

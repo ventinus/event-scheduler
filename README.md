@@ -36,7 +36,7 @@ Hosted at https://main.d3srwgjggapz7i.amplifyapp.com
   - ~~!! render action buttons which the current user is authorized to do !!~~
 - ~~improve styling and customizability of `withManagerAccess` to render in a modal~~
 - add path alias to webpack and jest
-- handle api loader errors correctly
+- ~~handle api loader errors correctly~~
 
 ### P1
 

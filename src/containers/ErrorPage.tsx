@@ -1,19 +1,20 @@
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useRouteError } from "react-router-dom";
 
 function ErrorPage() {
   const error = useRouteError() as any; // official return type is `unknown`
   console.error(error);
+  const errorMessage = error.statusText || error.message;
   return (
-    <>
-      <Typography variant="h1">Opps!</Typography>
+    <Box sx={{ py: 3 }}>
+      <Typography variant="h2">Ope!</Typography>
       <Typography variant="body1">
-        Sorry, an unexpected error has occurred.
+        Sorry, an unexpected error has occurred, please try again later.
       </Typography>
-      <Typography variant="body2">
-        {error.statusText || error.message}
-      </Typography>
-    </>
+      {errorMessage ? (
+        <Typography variant="body2">{errorMessage}</Typography>
+      ) : null}
+    </Box>
   );
 }
 

@@ -15,6 +15,7 @@ import { Event, Profile } from "../API";
 import { ImageUpload } from "../components/ImageUpload/ImageUpload";
 import EventCardList from "../components/EventCardList";
 import { dateIsInFuture } from "../utils/dateUtils";
+import Loader from "../components/Loader";
 
 const underline = { textDecoration: "underline" };
 
@@ -34,6 +35,7 @@ function groupEvents(events: Event[]) {
 
 function ProfilePage() {
   const { profile } = useLoaderData() as { profile: Profile };
+  if (!profile) return <Loader />;
   const events = (profile.events?.items ?? []) as Event[];
 
   const { past: pastEvents, upcoming: upcomingEvents } = groupEvents(events);
