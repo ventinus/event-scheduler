@@ -2,13 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Amplify } from "aws-amplify";
 import { Authenticator } from "@aws-amplify/ui-react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 import reportWebVitals from "./reportWebVitals";
 import awsConfig from "./aws-exports";
 import { AppRouter } from "./utils/routes";
 import { AlertProvider } from "./utils/alertCtx";
 import { UserProvider } from "./utils/userCtx";
+import { queryClient } from "./utils/api/queryClient";
 import "./index.css";
 
 import "@fontsource/roboto/300.css";
@@ -16,8 +17,6 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "@aws-amplify/ui-react/styles.css";
-
-const queryClient = new QueryClient();
 
 const isLocalhost = Boolean(
   window.location.hostname === "localhost" ||

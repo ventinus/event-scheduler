@@ -73,6 +73,7 @@ export const fetchCalendarEvents = async ({
     query: vanillaListEvents,
     variables: {
       filter: Object.assign(
+        {},
         approvedAndPendingFilter,
         eventsRangeFilter(startDate, endDate)
       ),
@@ -82,9 +83,7 @@ export const fetchCalendarEvents = async ({
   return (eventsData.data?.listEvents?.items || []) as Event[];
 };
 
-export const fetchEvent = async (
-  dateStr: string
-): Promise<Event> => {
+export const fetchEvent = async (dateStr: string): Promise<Event> => {
   const data = await API.graphql<GraphQLQuery<EventsByDateQuery>>({
     query: vanillaEventsByDate,
     variables: {
@@ -107,14 +106,6 @@ export const createEventRequest = (input: CreateEventInput) => {
 };
 
 export const updateEventRequest = (input: UpdateEventInput) => {
-  // if (!eventId || !data) {
-  //   throw new Error(
-  //     `eventId and data required to update an event id: ${eventId}, data: ${JSON.stringify(
-  //       data
-  //     )}`
-  //   );
-  // }
-
   return API.graphql({
     query: updateEvent,
     variables: { input },

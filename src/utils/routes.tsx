@@ -5,7 +5,6 @@ import {
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
-  useRouteError,
 } from "react-router-dom";
 import {
   Root,
@@ -16,7 +15,7 @@ import {
 } from "../containers";
 import { eventAlertVariants } from "../containers/AlertRoute";
 import { EventModal, ReviewEventModal } from "../components";
-import { eventLoader, eventsLoader, profileLoader } from "./loaders";
+import { eventLoader, profileLoader } from "./loaders";
 import {
   createEvent,
   updateEvent,
@@ -25,7 +24,6 @@ import {
   updateProfile,
 } from "./actions";
 import { useUser } from "./userCtx";
-import { Typography } from "@mui/material";
 
 export const paths = {
   home: () => "/",
@@ -44,8 +42,6 @@ export const paths = {
   reviewEvent: (dateStr = ":dateStr") => `/events/${dateStr}/review`,
 };
 
-export const routes: RouteObject[] = [];
-
 export const AppRouter = () => {
   const { id } = useUser();
   const router = createBrowserRouter(
@@ -58,7 +54,6 @@ export const AppRouter = () => {
         />
         <Route
           path="events"
-          loader={eventsLoader}
           element={<EventsPage />}
           errorElement={<ErrorPage />}
         >
@@ -78,7 +73,6 @@ export const AppRouter = () => {
           <Route
             path=":dateStr/detail"
             loader={eventLoader}
-            action={createEvent(id)}
             element={<EventModal />}
           />
           <Route

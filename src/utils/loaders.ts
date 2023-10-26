@@ -1,13 +1,8 @@
 import { LoaderFunctionArgs } from "react-router-dom";
 import { retry } from "@lifeomic/attempt";
 
-import { fetchCalendarEvents, fetchEvent, fetchProfile } from "./api/index";
+import { fetchEvent, fetchProfile } from "./api/index";
 import { Profile } from "../API";
-
-export async function eventsLoader() {
-  const events = await fetchCalendarEvents({});
-  return { events };
-}
 
 export async function eventLoader({ params }: LoaderFunctionArgs) {
   const event = await fetchEvent(params.dateStr as string);

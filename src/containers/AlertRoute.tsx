@@ -35,11 +35,10 @@ function AlertRoute({
 }) {
   const { setSuccess } = useAlert();
   const navigate = useNavigate();
-  console.log("alert route", variant, target);
 
   useEffect(() => {
     setSuccess(messages[variant]);
-    navigate(target, { replace: true });
+    navigate(target, { replace: true, state: { shouldRefetch: true } });
   }, [navigate, setSuccess, target, variant]);
 
   return null;

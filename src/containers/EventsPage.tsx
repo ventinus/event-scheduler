@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTheme, Container } from "@mui/material";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -10,18 +10,22 @@ import { paths } from "../utils/routes";
 import { useUser } from "../utils/userCtx";
 import { useListEvents } from "../utils/api/hooks";
 import {
-  dateIsInFuture,
+  MONTHS_CUTOFF,
   dateIsInNearFuture,
   isoToDate,
 } from "../utils/dateUtils";
+import { useAlert } from "../utils/alertCtx";
 
 function EventsPage() {
   const [dateRange, dateRangeSet] = useState({ startDate: "", endDate: "" });
-  const { data: events = [] } = useListEvents(dateRange);
+  const { data: events = [], refetch: refetchEvents } =
+    useListEvents(dateRange);
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
   const { isManager, isSignedIn } = useUser();
+  const alert = useAlert();
+  const { shouldRefetch } = location.state ?? {};
 
   const cachedEvents = useMemo(
     () =>
@@ -42,15 +46,20 @@ function EventsPage() {
       target = isManager
         ? paths.reviewEvent(dateStr)
         : paths.eventDetail(dateStr);
-    } else if (isSignedIn && dateIsInNearFuture(dateStr)) {
-      target = paths.eventDetail(dateStr);
+    } else if (!isSignedIn) {
+      alert.setInfo("You must be signed in to create an event");
+      return;
+    } else if (!dateIsInNearFuture(dateStr)) {
+      alert.setInfo(
+        `Only events can be created within the next ${MONTHS_CUTOFF} months`
+      );
+      return;
     }
+    target = paths.eventDetail(dateStr);
 
-    if (target.length) {
-      navigate(target, {
-        state: { previousLocation: location },
-      });
-    }
+    navigate(target, {
+      state: { previousLocation: location },
+    });
   };
 
   const handleDateClick = ({ dateStr }: any) => goto(dateStr);
@@ -66,6 +75,10 @@ function EventsPage() {
       endDate: isoToDate(endStr),
     });
   };
+
+  useEffect(() => {
+    if (shouldRefetch) refetchEvents();
+  }, [shouldRefetch]);
 
   return (
     <Container maxWidth="xl">
