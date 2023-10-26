@@ -60,3 +60,23 @@ export const getProfileSimple = /* GraphQL */ `
     }
   }
 `;
+
+export const simpleUpdateEvent = /* GraphQL */ `
+  mutation UpdateEvent(
+    $input: UpdateEventInput!
+    $condition: ModelEventConditionInput
+  ) {
+    updateEvent(input: $input, condition: $condition) {
+      id
+      title
+      date
+      description
+      status
+      image
+      createdAt
+      updatedAt
+      profileEventsId
+      owner
+    }
+  }
+`;

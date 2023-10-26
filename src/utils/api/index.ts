@@ -16,12 +16,12 @@ import {
 } from "../../API";
 import { getProfile } from "../../graphql/queries";
 import {
+  simpleUpdateEvent,
   vanillaEventsByDate,
   vanillaListEvents,
 } from "../../graphql/customQueries";
 import {
   createEvent,
-  updateEvent,
   deleteEvent,
   createProfile,
   updateProfile,
@@ -107,7 +107,7 @@ export const createEventRequest = (input: CreateEventInput) => {
 
 export const updateEventRequest = (input: UpdateEventInput) => {
   return API.graphql({
-    query: updateEvent,
+    query: simpleUpdateEvent,
     variables: { input },
   });
 };

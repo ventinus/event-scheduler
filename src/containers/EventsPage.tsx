@@ -54,8 +54,9 @@ function EventsPage() {
         `Only events can be created within the next ${MONTHS_CUTOFF} months`
       );
       return;
+    } else {
+      target = paths.eventDetail(dateStr);
     }
-    target = paths.eventDetail(dateStr);
 
     navigate(target, {
       state: { previousLocation: location },
@@ -77,6 +78,7 @@ function EventsPage() {
   };
 
   useEffect(() => {
+    // NOTE: it seems sometimes this happens too quickly and results in stale data
     if (shouldRefetch) refetchEvents();
   }, [shouldRefetch]);
 

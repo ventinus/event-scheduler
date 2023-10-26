@@ -1,11 +1,19 @@
 import { Fragment } from "react";
 import {
+  Link,
   useFetcher,
   useLoaderData,
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import { Modal, Box, Typography, IconButton, Theme } from "@mui/material";
+import {
+  Modal,
+  Box,
+  Typography,
+  IconButton,
+  Theme,
+  Button,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { LoadingButton } from "@mui/lab";
 
@@ -66,13 +74,14 @@ const eventToDescriptionList = ({
 ];
 
 function ReviewEventModal() {
-  const { isManager } = useUser();
+  const { isManager, username } = useUser();
   const { event } = useLoaderData() as { event: Event };
   const fetcher = useFetcher();
   const navigate = useNavigate();
   const location = useLocation();
   const target = location.state?.previousLocation || paths.events();
   const isEventInPast = dateIsInPast(event.date);
+  const isEventOwner = username === event.owner;
 
   const onClose = () => navigate(target);
 
@@ -113,44 +122,57 @@ function ReviewEventModal() {
                   },
                 }}
               >
-                <fetcher.Form
-                  method="post"
-                  action={paths.reviewEvent(event.id)}
-                >
-                  <input
-                    type="hidden"
-                    name="status"
-                    value={EventStatus.DENIED}
-                  />
-                  <LoadingButton
-                    type="submit"
+                {isEventOwner ? (
+                  <Button
                     variant="outlined"
-                    color="error"
-                    disableElevation
-                    loading={fetcher.state === "submitting"}
+                    component={Link}
+                    to={paths.eventDetail(event.date)}
                   >
-                    Deny
-                  </LoadingButton>
-                </fetcher.Form>
-                <fetcher.Form
-                  method="post"
-                  action={paths.reviewEvent(event.id)}
-                >
-                  <input
-                    type="hidden"
-                    name="status"
-                    value={EventStatus.APPROVED}
-                  />
-                  <LoadingButton
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    disableElevation
-                    loading={fetcher.state === "submitting"}
+                    Modify
+                  </Button>
+                ) : null}
+                {event.status !== EventStatus.DENIED ? (
+                  <fetcher.Form
+                    method="post"
+                    action={paths.reviewEvent(event.id)}
                   >
-                    Approve
-                  </LoadingButton>
-                </fetcher.Form>
+                    <input
+                      type="hidden"
+                      name="status"
+                      value={EventStatus.DENIED}
+                    />
+                    <LoadingButton
+                      type="submit"
+                      variant="outlined"
+                      color="error"
+                      disableElevation
+                      loading={fetcher.state === "submitting"}
+                    >
+                      Deny
+                    </LoadingButton>
+                  </fetcher.Form>
+                ) : null}
+                {event.status !== EventStatus.APPROVED ? (
+                  <fetcher.Form
+                    method="post"
+                    action={paths.reviewEvent(event.id)}
+                  >
+                    <input
+                      type="hidden"
+                      name="status"
+                      value={EventStatus.APPROVED}
+                    />
+                    <LoadingButton
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      disableElevation
+                      loading={fetcher.state === "submitting"}
+                    >
+                      Approve
+                    </LoadingButton>
+                  </fetcher.Form>
+                ) : null}
               </Box>
             )}
             <IconButton

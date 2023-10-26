@@ -55,6 +55,7 @@ function EventModal() {
   const target = location.state?.previousLocation || paths.events();
 
   const isEventOwner = isNewEvent || username === event?.owner;
+
   const isEventInPast = dateIsInPast(dateStr);
 
   const onClose = () => navigate(target);
@@ -145,7 +146,7 @@ function EventModal() {
             <EventImg image={event?.image} date={event?.date} />
           )}
 
-          {isSignedIn ? (
+          {isSignedIn && isEventOwner ? (
             <Box
               sx={{
                 textAlign: "right",
